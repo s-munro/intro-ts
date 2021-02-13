@@ -123075,6 +123075,10 @@ function () {
     };
   }
 
+  Company.prototype.markerContent = function () {
+    return "\n    <div>\n      <h1>Company Name: " + this.companyName + "</h1>\n      <h3>Catchphrase: " + this.catchPhrase + "</h3>\n    </div>";
+  };
+
   return Company;
 }();
 
@@ -123100,13 +123104,21 @@ function () {
     });
   }
 
-  CustomMap.prototype.addMarker = function (target) {
-    new google.maps.Marker({
+  CustomMap.prototype.addMarker = function (mappable) {
+    var _this = this;
+
+    var marker = new google.maps.Marker({
       map: this.googleMap,
       position: {
-        lat: target.location.lat,
-        lng: target.location.lng
+        lat: mappable.location.lat,
+        lng: mappable.location.lng
       }
+    });
+    marker.addListener("click", function () {
+      var infoWindow = new google.maps.InfoWindow({
+        content: mappable.markerContent()
+      });
+      infoWindow.open(_this.googleMap, marker);
     });
   };
 
@@ -123140,6 +123152,10 @@ function () {
       lng: parseFloat(faker_1.default.address.longitude())
     };
   }
+
+  User.prototype.markerContent = function () {
+    return "User Name: " + this.name;
+  };
 
   return User;
 }();
